@@ -7,7 +7,9 @@ import React from 'react';
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate
 } from 'react-router-dom';
+import { Dashboard } from './components/Dashboard/Dashboard';
 import { MainLayout } from './layouts/MainLayout/MainLayout';
 import { Routes } from './routes';
 
@@ -15,8 +17,18 @@ import { Routes } from './routes';
 const router = createBrowserRouter([
   {
     path: Routes.Home,
-    element: <MainLayout />
-  }
+    element: <MainLayout />,
+    children: [
+      {
+        path: Routes.Home,
+        element: <Navigate to={Routes.Dashboard} replace />
+      },
+      {
+        path: Routes.Dashboard,
+        element: <Dashboard />
+      }
+    ]
+  },
 ]);
 
 const theme = createTheme();
