@@ -36,6 +36,10 @@ export const SignUpLayout = () => {
     setUserForm({...userForm, [name as keyof TUserState]: value});
   }
 
+  const handleSubmit = () => {
+    alert(JSON.stringify(userForm));
+  }
+
   return <MainContainer>
     <FormContainer elevation={2}>
       <Typography mb={theme.spacing(2)} align='center' variant="h4">
@@ -68,7 +72,7 @@ export const SignUpLayout = () => {
           variant='standard' />
       </Box>
       
-      <Button variant='contained' fullWidth>Sign Up</Button>
+      <Button variant='contained' onClick={handleSubmit} fullWidth>Sign Up</Button>
     </FormContainer>
   </MainContainer>
 }
