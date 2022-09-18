@@ -1,4 +1,5 @@
 export const Routes = {
   Home: "/",
-  Dashboard: "dashboard"
+  Dashboard: "dashboard",
+  Auth: "auth"
 }

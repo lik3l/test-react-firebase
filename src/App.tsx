@@ -11,10 +11,15 @@ import {
 } from 'react-router-dom';
 import { Dashboard } from './components/Dashboard/Dashboard';
 import { MainLayout } from './layouts/MainLayout/MainLayout';
+import { SignUpLayout } from './layouts/SignUpLayout/SignUpLayout';
 import { Routes } from './routes';
 
 
 const router = createBrowserRouter([
+  {
+    path: Routes.Auth,
+    element: <SignUpLayout />
+  },
   {
     path: Routes.Home,
     element: <MainLayout />,
@@ -28,7 +33,7 @@ const router = createBrowserRouter([
         element: <Dashboard />
       }
     ]
-  },
+  }
 ]);
 
 const theme = createTheme();
