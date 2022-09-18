@@ -74,7 +74,7 @@ export const ProductItems = () => {
             <TableCell width={3} align='right'>
               <Box justifyContent='flex-end' display='flex' alignItems='center'>
                 <IconButton size='small' onClick={() => handleEdit(product)}><Edit /></IconButton>
-                <IconButton size='small' onClick={() => handleDelete}><Delete /></IconButton>
+                <IconButton size='small' onClick={() => handleDelete(product)}><Delete /></IconButton>
               </Box>
             </TableCell>
           </TableRow>)
