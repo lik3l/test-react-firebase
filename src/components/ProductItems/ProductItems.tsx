@@ -3,7 +3,7 @@ import { Add, Delete, Edit } from '@mui/icons-material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ProductModal } from '../ProductModal/ProductModal';
 import { TProduct } from '../../types';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -39,6 +39,17 @@ export const ProductItems = () => {
     setProductForEdit(null);
     setModalOpen(true);
   }
+  const handleDelete = async (product: TProduct) => {
+    if (!currentUser || !product?.id) {
+      return;
+    }
+    try {
+      await deleteDoc(doc(db, 'users', currentUser.uid, 'products', product.id));
+      setProducts(products.filter(p => p?.id !== product.id))
+    } finally {
+      
+    }
+  }
 
   return (
     <Box>
@@ -60,7 +71,7 @@ export const ProductItems = () => {
             <TableCell width={3} align='right'>
               <Box justifyContent='flex-end' display='flex' alignItems='center'>
                 <IconButton size='small' onClick={() => handleEdit(product)}><Edit /></IconButton>
-                <IconButton size='small'><Delete /></IconButton>
+                <IconButton size='small' onClick={() => handleDelete(product)}><Delete /></IconButton>
               </Box>
             </TableCell>
           </TableRow>)
