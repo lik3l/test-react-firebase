@@ -7,6 +7,7 @@ export type TModalProps = {
 }
 
 export type TProduct = {
+  id?: string;
   name: string;
   qty: number;
   price: number;

@@ -3,7 +3,7 @@ import { doc, setDoc, FirestoreError, collection } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../firebase';
-import { TModalProps, TProduct } from '../../types';
+import { TCallback, TModalProps, TProduct } from '../../types';
 
 const blankProduct: TProduct = {
   name: "",
@@ -11,8 +11,9 @@ const blankProduct: TProduct = {
   price: 0
 }
 
-type TProps = TModalProps & {}
-export const ProductModal: React.FC<TProps> = ({ open, onClose }) => {
+type TProps = TModalProps & { onSave: TCallback };
+
+export const ProductModal: React.FC<TProps> = ({ open, onClose, onSave }) => {
   const [itemForm, setItemForm] = useState<TProduct>(blankProduct);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,7 +35,12 @@ export const ProductModal: React.FC<TProps> = ({ open, onClose }) => {
     setLoading(true);
     try {
       const docRef = doc(collection(db, 'users', currentUser.uid, 'products'));
-      await setDoc(docRef, {name, qty, price});
+      await setDoc(docRef, {
+        name,
+        qty: Number(qty),
+        price: Number(price)
+      });
+      onSave();
       onClose();
     } catch (e) {
       const err = e as FirestoreError;
