@@ -22,7 +22,7 @@ export const ProductItems = () => {
     setProducts(data.docs
       .map(doc => ({id: doc.id, ...doc.data() as TProduct}))
     );
-  }, [])
+  }, [currentUser]);
 
   useEffect(() => {
     loadProducts();
