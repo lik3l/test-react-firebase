@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
 import { useAuth } from '../../contexts/AuthContext';
 import { FirebaseError } from 'firebase/app';
+import { Link } from 'react-router-dom';
+import { Routes } from '../../routes';
 
 
 type TUserState = {
@@ -16,7 +17,6 @@ const clearUserState: TUserState = { email: '', password: '', password2: '' };
 
 export const SignUp = () => {
   const [userForm, setUserForm] = useState<TUserState>(clearUserState);
-  const theme = useTheme();
   const { signUp } = useAuth();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,10 +48,10 @@ export const SignUp = () => {
   }
 
   return <>
-    <Typography mb={theme.spacing(2)} align='center' variant="h4">
+    <Typography mb={2} align='center' variant="h4">
       Sign Up
     </Typography>
-    <Box mb={error ? 2 : 4} display='flex' flexDirection='column' gap={theme.spacing(1)}>
+    <Box mb={1} display='flex' flexDirection='column' gap={1} component='form'>
       <TextField
         name='email'
         type='email'
@@ -76,14 +76,18 @@ export const SignUp = () => {
         fullWidth
         label='Repeat Password'
         variant='standard' />
+      {<Typography my={2} color={'red'}>{error}</Typography>}
+      <Button
+        type="submit"
+        disabled={loading}
+        variant='contained'
+        onClick={handleSubmit}
+        fullWidth>
+        Sign Up
+      </Button>
     </Box>
-    {error && <Typography my={2} color={'red'}>{error}</Typography>}
-    <Button
-      disabled={loading}
-      variant='contained'
-      onClick={handleSubmit}
-      fullWidth>
-      Sign Up
-    </Button>
+    <Typography align='center'>
+      Already signed up? <Link to={Routes.Login}>Log in</Link> instead.
+    </Typography>
   </>
 }

@@ -3,11 +3,12 @@ import React from 'react';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
-import { IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { TCallback } from '../../types';
 import { DrawerWidth } from '../../configs';
 import { styled } from '@mui/material/styles';
-
+import { useAuth } from '../../contexts/AuthContext';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -37,6 +38,7 @@ type TProps = {
 }
 
 export const MainAppBar: React.FC<TProps> = ({ open, onOpen }) => {
+  const {currentUser, logOut} = useAuth();
   return <AppBar position="fixed" open={open}>
     <Toolbar>
       <IconButton
@@ -54,6 +56,10 @@ export const MainAppBar: React.FC<TProps> = ({ open, onOpen }) => {
       <Typography variant="h6" noWrap component="div">
         Test Firebase
       </Typography>
+      <Box ml="auto" display="flex" alignItems="center">
+        <Typography variant="body1">{currentUser?.email}</Typography>
+        <IconButton onClick={logOut} color="inherit"><LogoutIcon /></IconButton>
+      </Box>
     </Toolbar>
   </AppBar>
 }
