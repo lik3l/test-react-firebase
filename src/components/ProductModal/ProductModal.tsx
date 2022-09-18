@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, TextField, Typography } from '@mui/material';
 import { doc, setDoc, FirestoreError, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../firebase';
 import { TCallback, TModalProps, TProduct } from '../../types';
@@ -11,13 +11,19 @@ const blankProduct: TProduct = {
   price: 0
 }
 
-type TProps = TModalProps & { onSave: TCallback };
+type TProps = TModalProps & { onSave: TCallback; product: TProduct|null; };
 
-export const ProductModal: React.FC<TProps> = ({ open, onClose, onSave }) => {
+export const ProductModal: React.FC<TProps> = ({ open, onClose, onSave, product }) => {
   const [itemForm, setItemForm] = useState<TProduct>(blankProduct);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const {currentUser} = useAuth();
+
+  useEffect(() => {
+    if (open) {
+      setItemForm(product ? {...product} : {...blankProduct});
+    }
+  }, [open, product]);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = ({ target: { value, name } }) => {
     setError('');
@@ -34,7 +40,14 @@ export const ProductModal: React.FC<TProps> = ({ open, onClose, onSave }) => {
     setError('');
     setLoading(true);
     try {
-      const docRef = doc(collection(db, 'users', currentUser.uid, 'products'));
+      let docRef;
+      if (product?.id) {
+        // Update
+        docRef = doc(db, 'users', currentUser.uid, 'products', product.id);
+      } else {
+        // Create
+        docRef = doc(collection(db, 'users', currentUser.uid, 'products'));
+      }
       await setDoc(docRef, {
         name,
         qty: Number(qty),
@@ -55,7 +68,7 @@ export const ProductModal: React.FC<TProps> = ({ open, onClose, onSave }) => {
     onClose={onClose}
   >
     <Box p={2}>
-      <Typography mb={2} align="center" variant="h4">Add new item:</Typography>
+      <Typography mb={2} align="center" variant="h4">{product ? 'Update' : 'Add new'} product:</Typography>
       <Box mb={2} display="flex" flexDirection="column" gap={1}>
         <TextField
           onChange={handleChange}
