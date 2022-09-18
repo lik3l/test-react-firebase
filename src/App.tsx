@@ -15,6 +15,7 @@ import { Login } from './components/Login/Login';
 import { MainLayout } from './layouts/MainLayout/MainLayout';
 import { SignUpLayout } from './layouts/SignUpLayout/SignUpLayout';
 import { Routes } from './routes';
+import { AuthProvider } from './contexts/AuthContext';
 
 
 const router = createBrowserRouter([
@@ -64,7 +65,9 @@ export const App: React.FC = () => {
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </ThemeProvider>
     </>
   );
