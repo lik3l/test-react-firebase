@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ProductModal } from '../ProductModal/ProductModal';
@@ -9,6 +9,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 export const ProductItems = () => {
   const [products, setProducts] = useState<TProduct[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [productForEdit, setProductForEdit] = useState<TProduct|null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const {currentUser} = useAuth();
@@ -18,10 +19,16 @@ export const ProductItems = () => {
       return;
     }
     const q = query(collection(db, "users", currentUser.uid, 'products'));
-    const data = await getDocs(q);
-    setProducts(data.docs
-      .map(doc => ({id: doc.id, ...doc.data() as TProduct}))
-    );
+    setLoading(true);
+    try {
+      const data = await getDocs(q);
+      setProducts(data.docs
+        .map(doc => ({id: doc.id, ...doc.data() as TProduct}))
+      );
+    } finally {
+      setLoading(false);
+    }
+    
   }, [currentUser]);
 
   useEffect(() => {
@@ -43,12 +50,8 @@ export const ProductItems = () => {
     if (!currentUser || !product?.id) {
       return;
     }
-    try {
-      await deleteDoc(doc(db, 'users', currentUser.uid, 'products', product.id));
-      setProducts(products.filter(p => p?.id !== product.id))
-    } finally {
-      
-    }
+    await deleteDoc(doc(db, 'users', currentUser.uid, 'products', product.id));
+    setProducts(products.filter(p => p?.id !== product.id))
   }
 
   return (
@@ -71,16 +74,18 @@ export const ProductItems = () => {
             <TableCell width={3} align='right'>
               <Box justifyContent='flex-end' display='flex' alignItems='center'>
                 <IconButton size='small' onClick={() => handleEdit(product)}><Edit /></IconButton>
-                <IconButton size='small' onClick={() => handleDelete(product)}><Delete /></IconButton>
+                <IconButton size='small' onClick={() => handleDelete}><Delete /></IconButton>
               </Box>
             </TableCell>
           </TableRow>)
             : <TableRow>
               <TableCell colSpan={5} align="center">
-                <Box display="flex" alignItems="center" flexDirection="column">
-                  <Typography mb={1}>You have no items.</Typography>
-                  <Button onClick={handleAddProduct} size="small" variant='outlined'><Add /> Add item</Button>
-                </Box>
+                {loading ? <CircularProgress /> :
+                  <Box display="flex" alignItems="center" flexDirection="column">
+                    <Typography mb={1}>You have no items.</Typography>
+                    <Button onClick={handleAddProduct} size="small" variant='outlined'><Add /> Add item</Button>
+                  </Box>
+                }
               </TableCell>
             </TableRow>
           }
