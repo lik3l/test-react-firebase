@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Paper } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import { Routes } from '../../routes';
+import { useAuth } from '../../contexts/AuthContext';
 
 const MainContainer = styled('div')`
   display: flex;
@@ -17,7 +19,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
 }));
 
 export const SignUpLayout = () => {
+  const {currentUser} = useAuth(); 
+
   return <MainContainer>
+    {currentUser && <Navigate to={Routes.Dashboard} replace />}
     <FormContainer elevation={2}>
       <Outlet />
     </FormContainer>

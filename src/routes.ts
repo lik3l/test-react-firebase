@@ -1,9 +1,9 @@
 export const Routes = {
   // Main
   Home: "/",
-  Dashboard: "dashboard",
+  Dashboard: "/dashboard",
   // Auth
-  Auth: "auth",
-  SignUp: "signup",
-  Login: "login"
+  Auth: "/auth",
+  SignUp: "/auth/signup",
+  Login: "/auth/login"
 }

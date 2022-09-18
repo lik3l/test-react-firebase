@@ -21,18 +21,20 @@ type TProps = { children?: React.ReactNode }
 
 export const AuthProvider: React.FC<TProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User|null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const signUp = useCallback<TAuthContext['signUp']>(({ email, password }) => {
     return createUserWithEmailAndPassword(auth, email, password);
   }, []);
   useEffect(() => {
     const callback = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user)
+      setCurrentUser(user);
+      setLoading(false);
     });
     return callback;
   }, []);
 
   return <AuthContext.Provider value={{currentUser, signUp}}>
-    {children}
+    {!loading && children}
   </AuthContext.Provider>
 }
